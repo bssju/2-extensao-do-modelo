@@ -1,4 +1,5 @@
-# House Prices — Otimização Bayesiana + Multiobjetivo
+# Série: Previsão de Preços de Imóveis
+# 2. Otimização do Modelo — Busca de Hiperparâmetros e Seleção de Variáveis
 
 Extensão da solução base para a competição [House Prices - Advanced Regression Techniques](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques) do Kaggle, adicionando otimização bayesiana de hiperparâmetros (Optuna) e otimização multiobjetivo de seleção de features (NSGA-II).
 
