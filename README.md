@@ -33,9 +33,9 @@ O NSGA-II revelou que 65% das features podem ser eliminadas com impacto mínimo 
 
 ```
 house-prices-bayesian-multiobjective/
-├── house_prices_bayesian_multiobjective.ipynb
+├── otimizacao_modelo_bayesiana_multiobjetivo.ipynb
 ├── README.md
-├── submission_optuna.csv
+└── submission_optuna.csv
 ```
 
 ---
@@ -110,9 +110,6 @@ O **NSGA-II** (Non-dominated Sorting Genetic Algorithm II) otimiza dois objetivo
 
 #### Fronteira de Pareto
 
-> RMSLE avaliado com CV 3-fold (reduzido para viabilidade computacional dentro do NSGA-II).
-> Coluna "vs. Optuna completo" compara com o modelo Optuna usando todas as 240 features (RMSLE CV = 0.12640).
-
 | Solução | Features | RMSLE (CV 3-fold) | vs. Optuna completo |
 |---|---|---|---|
 | Mais enxuta | 75 | 0.13150 | +0.00510 |
@@ -131,7 +128,27 @@ O **NSGA-II** (Non-dominated Sorting Genetic Algorithm II) otimiza dois objetivo
 | Modelo sujeito a auditoria ou regulação | **83 features** | Interpretável sem grande perda de precisão |
 | Pesquisa ou competição | 93 features | RMSLE máxima é o único critério |
 
-O ponto de joelho elimina **157 features (65% do total)** com custo de apenas **+0.00270 de RMSLE** — evidência de que o sinal preditivo está concentrado em ~83 variáveis, e que a maioria das colunas geradas pelo one-hot encoding carrega informação redundante.
+---
+
+## Conclusão
+
+Este notebook estendeu o modelo base em duas direções complementares:
+
+**Parte A — Otimização Bayesiana (Optuna TPE)**
+
+A substituição do GridSearchCV pelo Optuna resultou em **RMSLE de 0,12436 no Kaggle**, uma melhoria de **−3,96%** obtida apenas com um tuning mais inteligente — sem alterar o modelo ou as features. O alinhamento entre a melhoria no CV (−3,27%) e no Kaggle (−3,96%) confirma que não houve overfitting ao processo de tuning.
+
+- **TPE vs. GridSearchCV:** o espaço contínuo de 8 hiperparâmetros com 80 trials superou a grade fixa de 16 combinações
+- **MedianPruner:** eliminou trials fracos antes da avaliação completa, reduzindo custo computacional sem perda de qualidade
+- **Escala logarítmica:** `learning_rate`, `reg_alpha` e `reg_lambda` em escala log garantiram exploração uniforme em todas as ordens de magnitude
+
+**Parte B — Otimização Multiobjetivo (NSGA-II)**
+
+O NSGA-II mapeou a Fronteira de Pareto completa entre performance e número de features, revelando que **65% das features podem ser eliminadas com custo de apenas +0,00270 de RMSLE** no ponto de joelho.
+
+- **Fronteira de Pareto:** entregou ao cientista a decisão de onde se posicionar no trade-off, em vez de fixar um único ponto arbitrário
+- **Ponto de joelho:** 83 features com RMSLE de 0,12910 — solução recomendada para contextos com restrição de interpretabilidade ou latência
+- **Concentração do sinal:** a maioria das colunas geradas pelo one-hot encoding carrega informação redundante; o sinal preditivo está concentrado em ~83 variáveis
 
 ---
 
